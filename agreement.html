@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Agreement - Arajit Halder</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- STYLES --- */
+        :root { --primary: #D20020; --dark: #0a0a0a; --light-bg: #f2f4f7; --input-bg: #f9fafb; --border: #e5e7eb; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--light-bg); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+        
+        .agreement-card { display: flex; width: 100%; max-width: 1200px; background: white; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); overflow: hidden; min-height: 850px; }
+        
+        /* LEFT PANEL */
+        .left-panel { flex: 0.8; background-color: var(--dark); color: white; padding: 60px; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
+        .back-btn { width: 45px; height: 45px; border: 1px solid rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; transition: 0.3s; }
+        .back-btn:hover { background: white; color: black; }
+        
+        /* --- PROFILE IMAGE FIX (Circle & Fit) --- */
+        .profile-pic { 
+            width: 100px; 
+            height: 100px; 
+            border-radius: 50%; 
+            border: 3px solid rgba(255,255,255,0.2); 
+            /* ইমেজ এর সোর্স এখানে দিন */
+            background-image: url('Images/about.png'); 
+            /* ছবিটি যাতে শেইপের সাথে অ্যাডজাস্ট হয় */
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat;
+            margin: 30px 0; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3); 
+        }
+
+        .hero-title { font-size: 3rem; line-height: 1.1; font-weight: 800; margin-bottom: 20px; }
+        .hero-title span { color: var(--primary); }
+        .hero-desc { color: #9ca3af; font-size: 0.95rem; line-height: 1.6; margin-bottom: 40px; }
+        .features-list { list-style: none; }
+        .features-list li { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; font-weight: 500; font-size: 0.95rem; color: #e5e5e5; }
+        .features-list i { color: var(--primary); font-size: 1.1rem; }
+        .consult-btn { margin-top: auto; display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; color: white; text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.3s; width: fit-content; }
+        .consult-btn:hover { background: white; color: black; border-color: white; }
+
+        /* RIGHT PANEL */
+        .right-panel { flex: 1.2; padding: 60px; background-color: white; overflow-y: auto; max-height: 100vh; }
+        .section-title { font-size: 1rem; font-weight: 800; color: #111; margin-bottom: 25px; border-bottom: 2px solid #f3f4f6; padding-bottom: 10px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-row { display: flex; gap: 20px; margin-bottom: 20px; }
+        .form-col { flex: 1; }
+        label { display: block; font-size: 0.75rem; font-weight: 700; color: #4b5563; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .input-field { width: 100%; padding: 14px 16px; background-color: var(--input-bg); border: 1px solid transparent; border-radius: 10px; font-size: 0.95rem; color: #1f2937; outline: none; transition: 0.3s; font-weight: 500; }
+        .input-field:focus { background-color: white; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(210, 0, 32, 0.05); }
+        textarea.input-field { resize: vertical; min-height: 100px; }
+        
+        .upload-box { border: 2px dashed #e5e7eb; border-radius: 16px; padding: 35px; text-align: center; cursor: pointer; background: #ffffff; transition: 0.3s; position: relative; overflow: hidden; background-image: repeating-linear-gradient(45deg, #f9fafb, #f9fafb 10px, #ffffff 10px, #ffffff 20px); }
+        .upload-box:hover { border-color: var(--primary); background: #fff1f2; background-image: none; }
+        .upload-icon-circle { width: 48px; height: 48px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.2rem; box-shadow: 0 5px 15px rgba(210,0,32,0.3); }
+        .upload-title { font-weight: 700; color: #111; margin-bottom: 5px; font-size: 1rem; }
+        .upload-subtitle { font-size: 0.85rem; color: #9ca3af; }
+        .preview-img { max-height: 70px; margin-top: 15px; display: none; margin-left: auto; margin-right: auto; border: 1px solid #ddd; border-radius: 5px; padding: 5px; background: white; }
+
+        /* BUTTON STYLE */
+        #genBtn { display: block; width: 100%; background: var(--primary); color: white; padding: 18px; border: none; border-radius: 50px; font-size: 1.05rem; font-weight: 700; cursor: pointer; margin-top: 30px; transition: all 0.3s ease; box-shadow: 0 10px 25px rgba(210, 0, 32, 0.3); text-align: center; text-transform: uppercase; letter-spacing: 0.5px; }
+        #genBtn:hover { background: #b0001b; transform: translateY(-3px); box-shadow: 0 15px 35px rgba(210, 0, 32, 0.4); }
+        #genBtn:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        /* PDF TEMPLATE (Hidden Overlay) */
+        #pdf-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; display: none; justify-content: center; align-items: center; }
+        #pdf-template { width: 794px; background: white; padding: 40px 50px; font-family: 'Times New Roman', serif; color: black; line-height: 1.4; }
+        .doc-header { text-align: center; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 20px; }
+        .doc-header h2 { margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; }
+        .doc-sec-title { font-weight: bold; border-bottom: 1px solid #ccc; margin-bottom: 8px; font-size: 13px; text-transform: uppercase; padding-bottom: 3px; }
+        .doc-row { display: flex; margin-bottom: 5px; font-size: 13px; }
+        .doc-label { width: 140px; font-weight: bold; }
+        .doc-val { flex: 1; border-bottom: 1px dotted #999; padding-left: 5px; }
+        .doc-body { text-align: justify; margin: 15px 0; font-size: 13px; }
+        .sign-area { display: flex; justify-content: space-between; margin-top: 40px; }
+        .sign-box { width: 40%; text-align: center; }
+        .sign-line { border-bottom: 1px solid black; height: 60px; margin-bottom: 5px; display: flex; align-items: flex-end; justify-content: center; }
+        .sign-img-print { max-height: 50px; display: block; margin-bottom: 2px; }
+
+        @media (max-width: 1024px) { .agreement-card { flex-direction: column; min-height: auto; } .left-panel, .right-panel { padding: 40px 25px; } .form-row { flex-direction: column; gap: 15px; } }
+    </style>
+</head>
+<body>
+
+    <div class="agreement-card">
+        <div class="left-panel">
+            <div>
+                <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+                <div class="profile-pic"></div>
+                
+                <h1 class="hero-title">Project<br><span>Agreement.</span></h1>
+                <p class="hero-desc">Let’s make it official. Filling out this form ensures a clear understanding and sets the stage for a successful creative partnership.</p>
+                <ul class="features-list">
+                    <li><i class="fas fa-shield-alt"></i> Secure & Professional Service</li>
+                    <li><i class="fas fa-coins"></i> 50% Advance to Initiate</li>
+                    <li><i class="fas fa-hourglass-half"></i> Strict Timeline Adherence</li>
+                    <li><i class="fas fa-lock"></i> Full IP Ownership Transfer</li>
+                </ul>
+            </div>
+            <a href="appointment.html" class="consult-btn">Book a Consultation <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="right-panel">
+            <form id="agreementForm">
+                <span class="section-title">01. Client Details</span>
+                <div class="form-row">
+                    <div class="form-col"><label>Full Name</label><input type="text" name="Client_Name" id="inName" class="input-field" required></div>
+                    <div class="form-col"><label>Business Name</label><input type="text" name="Business_Name" id="inCompany" class="input-field"></div>
+                </div>
+                <div style="margin-bottom: 30px;"><label>Email Address</label><input type="email" name="Email" id="inEmail" class="input-field" required></div>
+
+                <span class="section-title">02. Project Brief</span>
+                <div class="form-row">
+                    <div class="form-col"><label>Project Type</label>
+                        <select name="Service" id="inService" class="input-field">
+                            <option>Logo Design</option><option>Brand Identity</option><option>Web Design</option><option>Social Media</option>
+                        </select>
+                    </div>
+                    <div class="form-col"><label>Target Audience</label><input type="text" name="Audience" class="input-field" placeholder="Tech Startups..."></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-col"><label>Preferred Colors</label><input type="text" name="Colors" class="input-field"></div>
+                    <div class="form-col"><label>Design Style</label><input type="text" name="Style" class="input-field"></div>
+                </div>
+                <div style="margin-bottom: 30px;"><label>Detailed Description</label><textarea name="Description" id="inDesc" class="input-field"></textarea></div>
+
+                <span class="section-title">03. Digital Signature</span>
+                <div class="upload-box" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                    <input type="file" id="fileInput" hidden accept="image/*">
+                    <div class="upload-icon-circle"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <div class="upload-title">Click to Upload Signature</div>
+                    <div class="upload-subtitle">or Drag & Drop your file here (PNG, JPG)</div>
+                    <img id="previewImg" class="preview-img" src="">
+                </div>
+                
+                <input type="hidden" name="_subject" value="New Agreement Signed (PDF Attached)">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_template" value="table">
+
+                <button type="submit" id="genBtn">Sign & Submit Project</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="pdf-overlay">
+        <div id="pdf-template">
+            <div class="doc-header"><h2>Service Agreement</h2><p style="font-size:12px; margin-top:5px;">Date: <span id="docDate"></span></p></div>
+            <div style="margin-bottom:20px;">
+                <div class="doc-sec-title">Client Information</div>
+                <div class="doc-row"><span class="doc-label">Name:</span> <span class="doc-val" id="outName"></span></div>
+                <div class="doc-row"><span class="doc-label">Company:</span> <span class="doc-val" id="outCompany"></span></div>
+                <div class="doc-row"><span class="doc-label">Email:</span> <span class="doc-val" id="outEmail"></span></div>
+            </div>
+            <div style="margin-bottom:20px;">
+                <div class="doc-sec-title">Project Details</div>
+                <div class="doc-row"><span class="doc-label">Service:</span> <span class="doc-val" id="outService"></span></div>
+                <div class="doc-row"><span class="doc-label">Audience:</span> <span class="doc-val" id="outAudience"></span></div>
+                <p style="font-size:13px; font-weight:bold; margin-top:8px;">Description:</p>
+                <div style="font-size:13px; border:1px solid #eee; padding:8px; min-height:40px; text-align:justify;" id="outDesc"></div>
+            </div>
+            <div class="doc-body">
+                <div class="doc-sec-title">Terms & Conditions</div>
+                <ul><li><strong>Payment:</strong> 50% non-refundable deposit required.</li><li><strong>Revisions:</strong> Up to 3 rounds included.</li><li><strong>Ownership:</strong> Full copyright transfers upon payment.</li></ul>
+            </div>
+            <div class="sign-area">
+                <div class="sign-box"><div class="sign-line"><span style="font-family:'Cursive',serif; font-size:22px; font-weight:bold;">Arajit.H</span></div><div><strong>Arajit Halder</strong><br><small>Service Provider</small></div></div>
+                <div class="sign-box"><div class="sign-line"><img id="pdfSignImg" class="sign-img-print" src="" style="display:none;"></div><div><strong><span id="signNameFooter">Client</span></strong><br><small>Authorized Signature</small></div></div>
+            </div>
+            <div style="text-align:center; margin-top:40px; font-size:11px; color:#666;">Legally binding agreement generated on <span id="footerDate"></span>.</div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIG: আপনার ইমেইল
+        const OWNER_EMAIL = "arajithalder123@gmail.com"; 
+
+        const fileInput = document.getElementById('fileInput');
+        const previewImg = document.getElementById('previewImg');
+        const pdfSignImg = document.getElementById('pdfSignImg');
+        const dropZone = document.getElementById('dropZone');
+        const form = document.getElementById('agreementForm');
+
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block';
+                    pdfSignImg.src = e.target.result;
+                    pdfSignImg.style.display = 'block';
+                    dropZone.style.borderColor = '#D20020';
+                    dropZone.style.background = '#fff5f5';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('genBtn');
+            const clientName = document.getElementById('inName').value;
+            const dateStr = new Date().toLocaleDateString();
+
+            if(fileInput.files.length === 0) {
+                alert("Please upload signature.");
+                return;
+            }
+
+            // 1. FILL PDF DATA
+            document.getElementById('docDate').innerText = dateStr;
+            document.getElementById('footerDate').innerText = dateStr;
+            document.getElementById('outName').innerText = clientName;
+            document.getElementById('outCompany').innerText = document.getElementById('inCompany').value || 'N/A';
+            document.getElementById('outEmail').innerText = document.getElementById('inEmail').value;
+            document.getElementById('outService').innerText = document.getElementById('inService').value;
+            document.getElementById('outAudience').innerText = document.querySelector('.input-field[placeholder*="Tech"]').value;
+            document.getElementById('outDesc').innerText = document.getElementById('inDesc').value;
+            document.getElementById('signNameFooter').innerText = clientName;
+
+            // 2. SHOW OVERLAY (Invisible to user but visible to script)
+            const overlay = document.getElementById('pdf-overlay');
+            const element = document.getElementById('pdf-template');
+            overlay.style.display = 'flex';
+            
+            btn.innerHTML = 'Creating & Sending Agreement... <i class="fas fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+
+            const opt = {
+                margin: 10,
+                filename: `Agreement_${clientName}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // 3. GENERATE PDF BLOB & SEND VIA AJAX
+            setTimeout(() => {
+                html2pdf().set(opt).from(element).output('blob').then((blob) => {
+                    
+                    const formData = new FormData(form);
+                    
+                    // Attach the PDF file to the form data
+                    formData.append("Agreement_Document", blob, `Agreement_${clientName}.pdf`);
+
+                    // Send via FormSubmit AJAX (No Redirect)
+                    fetch(`https://formsubmit.co/${OWNER_EMAIL}`, {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => {
+                        alert("Success! Agreement Signed and sent to Arajit via Email.");
+                        
+                        // CLEAN UP
+                        overlay.style.display = 'none';
+                        form.reset();
+                        previewImg.style.display = 'none';
+                        pdfSignImg.src = "";
+                        dropZone.style.borderColor = '#e5e7eb';
+                        dropZone.style.background = '#ffffff';
+                        btn.innerHTML = 'Sign & Submit Project';
+                        btn.disabled = false;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("Submission failed. Please check internet connection.");
+                        overlay.style.display = 'none';
+                        btn.innerHTML = 'Sign & Submit Project';
+                        btn.disabled = false;
+                    });
+                });
+            }, 1000);
+        });
+    </script>
+</body>
+
+</html>
