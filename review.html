@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Reviews - Arajit Halder</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #D20020;
+            --dark: #0f0f0f;
+            --text-light: #555;
+            --trustpilot: #00b67a;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--dark);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- Header --- */
+        .header {
+            padding: 20px 5vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .back-btn {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border-radius: 30px;
+            background: #fff;
+            border: 1px solid #eee;
+            transition: 0.3s;
+        }
+        .back-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .page-title { font-weight: 800; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- Wrapper --- */
+        .reviews-wrapper {
+            padding: 60px 0;
+            overflow: hidden;
+        }
+
+        .section-intro {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+        .section-intro h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: var(--dark);
+            line-height: 1.2;
+        }
+        .section-intro p {
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .trust-badge {
+            margin-top: 25px;
+            display: inline-flex;
+            align-items: center;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .trust-badge i { color: var(--trustpilot); margin-right: 8px; font-size: 1.1rem; }
+
+        /* --- SLIDER CONTAINER --- */
+        .slider-container {
+            width: 100%;
+            position: relative;
+            padding: 20px 0 50px;
+        }
+
+        .reviews-slider {
+            display: flex;
+            gap: 30px;
+            overflow-x: auto;
+            padding: 20px 5vw 40px; 
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+        }
+        .reviews-slider::-webkit-scrollbar { display: none; }
+
+        /* --- CARD DESIGN --- */
+        .review-card {
+            min-width: 350px;
+            max-width: 350px;
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.03);
+            flex-shrink: 0;
+            position: relative;
+            transition: transform 0.3s ease;
+            user-select: none;
+        }
+        
+        .review-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        }
+
+        .quote-icon {
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            font-size: 3rem;
+            color: rgba(0,0,0,0.04);
+            font-family: serif;
+        }
+
+        .stars { color: var(--trustpilot); font-size: 1rem; margin-bottom: 15px; display: block; }
+        
+        .review-headline {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--dark);
+            line-height: 1.3;
+        }
+        
+        .review-body {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 25px;
+            height: 85px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-top: 1px solid #f4f4f4;
+            padding-top: 20px;
+        }
+        
+        .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        /* Dynamic Avatar Colors */
+        .review-card:nth-child(2n) .avatar { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%); }
+        .review-card:nth-child(3n) .avatar { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+        .review-card:nth-child(4n) .avatar { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
+        .review-card:nth-child(5n) .avatar { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); }
+
+        .info-text h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+        .info-text span { font-size: 0.8rem; color: #999; display: block; }
+        .verified { color: #3b82f6; font-size: 0.8rem; margin-left: 4px; }
+
+        /* --- Scroll Hint --- */
+        .scroll-hint {
+            text-align: center;
+            margin-top: -10px;
+            font-size: 0.85rem;
+            color: #aaa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .scroll-hint i { animation: bounceX 1.5s infinite; }
+        @keyframes bounceX { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
+
+        /* --- MOBILE OPTIMIZATION --- */
+        @media (max-width: 768px) {
+            .section-intro h1 { font-size: 2rem; }
+            .review-card { min-width: 85vw; max-width: 85vw; padding: 25px; }
+            .reviews-slider { padding: 10px 20px 30px; gap: 15px; scroll-snap-type: x mandatory; }
+            .review-card { scroll-snap-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Home</a>
+        <div class="page-title">Client Stories</div>
+    </header>
+
+    <div class="reviews-wrapper">
+        
+        <div class="section-intro">
+            <h1>Trusted by Brands.<br>Verified Results.</h1>
+            <p>See what businesses say about our collaboration.</p>
+            
+            <div class="trust-badge">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                4.9/5 on Trustpilot
+            </div>
+        </div>
+
+        <div class="slider-container">
+            <div class="reviews-slider" id="reviewSlider">
+
+                <div class="review-card">
+                    <div class="quote-icon">❝</div>
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <h3 class="review-headline">Incredible Logo Design!</h3>
+                    <p class="review-body">Arajit completely transformed our brand identity. The logo is modern, clean, and exactly what we needed for our tech startup.</p>
+                    <div class="reviewer-info">
+                        <div class="avatar">D</div>
+                        <div class="info-text"><h4>Dan Wilson <i class="fas fa-check-circle verified"></i></h4><span>CEO, TechStart</span></div>
+                    </div>
+                </div>
+
+                <div class="review-card">
+                    <div class="quote-icon">❝</div>
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <h3 class="review-headline">Highly Professional</h3>
+                    <p class="review-body">He understood our vision perfectly and delivered the project way ahead of schedule. The creativity is top-notch.</p>
+                    <div class="reviewer-info">
+                        <div class="avatar">S</div>
+                        <div class="info-text"><h4>Sarah L. <i class="fas fa-check-circle verified"></i></h4><span>Marketing Head</span></div>
+                    </div>
+                </div>
+
+                <div class="review-card">
+                    <div class="quote-icon">❝</div>
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <h3 class="review-headline">Exceeded Expectations</h3>
+                    <p class="review-body">The social media kit was amazing. Engagement increased by 40% after using his designs. Will definitely hire again.</p>
+                    <div class="reviewer-info">
+                        <div class="avatar">M</div>
+                        <div class="info-text"><h4>Mike T. <i class="fas fa-check-circle verified"></i></h4><span>Founder, FitLife</span></div>
+                    </div>
+                </div>
+
+                <div class="review-card">
+                    <div class="quote-icon">❝</div>
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <h3 class="review-headline">Stunning Packaging</h3>
+                    <p class="review-body">Our product stands out on the shelf now thanks to Arajit's brilliant color theory and layout skills.</p>
+                    <div class="reviewer-info">
+                        <div class="avatar">J</div>
+                        <div class="info-text"><h4>James K. <i class="fas fa-check-circle verified"></i></h4><span>Product Lead</span></div>
+                    </div>
+                </div>
+
+                <div class="review-card">
+                    <div class="quote-icon">❝</div>
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <h3 class="review-headline">Great Communication</h3>
+                    <p class="review-body">What I loved most was the communication. He kept me updated throughout the process and was very open to feedback.</p>
+                    <div class="reviewer-info">
+                        <div class="avatar">E</div>
+                        <div class="info-text"><h4>Emily Rose</h4><span>Creative Lead</span></div>
+                    </div>
+                </div>
+
+                <div class="review-card">
+                    <div class="quote-icon">❝</div>
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <h3 class="review-headline">Detailed Guidelines</h3>
+                    <p class="review-body">I needed a rebranding for my agency and Arajit delivered exactly what I envisioned. The brand guidelines were very detailed.</p>
+                    <div class="reviewer-info">
+                        <div class="avatar">R</div>
+                        <div class="info-text"><h4>Robert P. <i class="fas fa-check-circle verified"></i></h4><span>Agency Owner</span></div>
+                    </div>
+                </div>
+
+                <div class="review-card">
+                    <div class="quote-icon">❝</div>
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <h3 class="review-headline">Visionary Designer</h3>
+                    <p class="review-body">Arajit has a unique eye for detail. The brochure design was elegant and perfectly captured our luxury brand aesthetic.</p>
+                    <div class="reviewer-info">
+                        <div class="avatar">E</div>
+                        <div class="info-text"><h4>Elena G. <i class="fas fa-check-circle verified"></i></h4><span>Creative Director</span></div>
+                    </div>
+                </div>
+
+                <div class="review-card">
+                    <div class="quote-icon">❝</div>
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <h3 class="review-headline">Perfect Rebrand</h3>
+                    <p class="review-body">We needed a quick turnaround for our event graphics, and he delivered flawless work under tight deadlines.</p>
+                    <div class="reviewer-info">
+                        <div class="avatar">M</div>
+                        <div class="info-text"><h4>Mark D. <i class="fas fa-check-circle verified"></i></h4><span>Event Manager</span></div>
+                    </div>
+                </div>
+
+                <div class="review-card">
+                    <div class="quote-icon">❝</div>
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <h3 class="review-headline">Highly Skilled</h3>
+                    <p class="review-body">The best investment for our startup. The visual identity he created is already attracting investors and compliments.</p>
+                    <div class="reviewer-info">
+                        <div class="avatar">S</div>
+                        <div class="info-text"><h4>Sophia W. <i class="fas fa-check-circle verified"></i></h4><span>CEO, StartUp</span></div>
+                    </div>
+                </div>
+
+                <div class="review-card">
+                    <div class="quote-icon">❝</div>
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <h3 class="review-headline">Brand Transformation</h3>
+                    <p class="review-body">Professional, patient, and incredibly talented. He took our vague ideas and made them a stunning reality.</p>
+                    <div class="reviewer-info">
+                        <div class="avatar">D</div>
+                        <div class="info-text"><h4>David H. <i class="fas fa-check-circle verified"></i></h4><span>Founder</span></div>
+                    </div>
+                </div>
+
+                <div class="review-card">
+                    <div class="quote-icon">❝</div>
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <h3 class="review-headline">Creative Genius</h3>
+                    <p class="review-body">His understanding of color psychology is amazing. Our website looks modern, trustworthy, and converts better now.</p>
+                    <div class="reviewer-info">
+                        <div class="avatar">O</div>
+                        <div class="info-text"><h4>Olivia B. <i class="fas fa-check-circle verified"></i></h4><span>Marketing VP</span></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <p class="scroll-hint"><i class="fas fa-hand-pointer"></i> Drag or Scroll to explore</p>
+
+    </div>
+
+    <script>
+        const slider = document.getElementById('reviewSlider');
+
+        slider.addEventListener('wheel', (evt) => {
+            evt.preventDefault();
+            slider.scrollLeft += evt.deltaY;
+        });
+    </script>
+
+</body>
+</html>
