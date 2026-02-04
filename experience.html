@@ -33,6 +33,11 @@
             transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
         .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         /* --- Header --- */
         .header {
@@ -43,7 +48,7 @@
             position: sticky;
             top: 0;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px);
             z-index: 1000;
             border-bottom: 1px solid rgba(0,0,0,0.03);
         }
@@ -62,27 +67,70 @@
         .back-btn:hover { color: var(--primary); gap: 15px; }
         .page-label { font-weight: 800; font-size: 0.8rem; letter-spacing: 2px; color: #999; text-transform: uppercase; }
 
-        /* --- Hero Section --- */
+        /* --- UPDATED HERO SECTION --- */
         .exp-hero {
             text-align: center;
-            padding: 100px 20px 80px;
+            padding: 120px 20px 100px;
             max-width: 1000px;
             margin: 0 auto;
+            position: relative;
+            /* Modern Background Pattern */
+            background-color: #ffffff;
+            background-image:  radial-gradient(#D20020 0.5px, transparent 0.5px), radial-gradient(#D20020 0.5px, #ffffff 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
         }
+
+        /* Overlay to make pattern subtle */
+        .exp-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.92);
+            z-index: 0;
+        }
+
+        .exp-hero h1, .exp-hero p {
+            position: relative;
+            z-index: 1;
+        }
+
         .exp-hero h1 {
-            font-size: 4rem;
+            font-size: 4.5rem;
             font-weight: 800;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             line-height: 1.1;
-            color: var(--dark);
-            letter-spacing: -1px;
+            letter-spacing: -1.5px;
+            /* Text Gradient */
+            background: -webkit-linear-gradient(45deg, var(--dark), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.8s ease-out;
         }
+
+        /* Decorative Line under Heading */
+        .exp-hero h1::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--primary);
+            margin: 25px auto 0;
+            border-radius: 2px;
+        }
+
         .exp-hero p {
             color: var(--text-gray);
-            font-size: 1.2rem;
-            line-height: 1.7;
+            font-size: 1.25rem;
+            line-height: 1.8;
             max-width: 750px;
             margin: 0 auto;
+            font-weight: 400;
+            animation: fadeInUp 1s ease-out 0.2s backwards;
         }
 
         /* --- TOOLS SECTION --- */
@@ -94,7 +142,7 @@
         
         .section-header {
             text-align: center;
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 800;
             margin-bottom: 60px;
             color: var(--dark);
@@ -289,8 +337,9 @@
 
         /* --- MOBILE RESPONSIVE --- */
         @media (max-width: 768px) {
-            .exp-hero { padding: 80px 20px; }
-            .exp-hero h1 { font-size: 2.5rem; }
+            .exp-hero { padding: 80px 20px 60px; }
+            .exp-hero h1 { font-size: 2.8rem; }
+            .exp-hero h1::after { width: 60px; margin-top: 20px; }
             .tools-grid { grid-template-columns: 1fr; }
             .steps-grid { grid-template-columns: 1fr; gap: 60px; }
             .workflow-section { padding: 80px 20px; }
@@ -387,7 +436,7 @@
     <div class="workflow-section">
         <div class="workflow-header">
             <h2>My Strategic Workflow</h2>
-            <p>I don't just design; I follow a proven, data-driven process to ensure your success.</p>
+            <p>I don't just design; I follow a proven, data-driven process to ensure success.</p>
         </div>
         <div class="workflow-container">
             <div class="steps-grid">
