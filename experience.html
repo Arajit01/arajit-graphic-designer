@@ -143,15 +143,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden; /* Keeps image inside border radius */
+            overflow: hidden; 
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            background: #f0f0f0; /* Fallback color */
+            background: #f0f0f0; 
         }
         
         .tool-icon img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Ensures image fills the box */
+            object-fit: cover; 
         }
 
         .tool-info h3 {
@@ -196,7 +196,7 @@
         .modern-ui { background: #f0f5ff; color: #3b82f6; border-color: #dbeafe; }
         .animation { background: #fdf2f8; color: #ec4899; border-color: #fce7f3; }
 
-        /* --- WORKFLOW SECTION --- */
+        /* --- WORKFLOW SECTION (Updated) --- */
         .workflow-section {
             background: #0a0a0a;
             color: white;
@@ -205,13 +205,19 @@
             position: relative;
         }
         
+        /* Centered Header Style */
         .workflow-header {
-            text-align: left;
+            text-align: center; /* CENTERED */
             max-width: 1200px;
             margin: 0 auto 80px;
         }
         .workflow-header h2 { font-size: 3rem; font-weight: 800; margin-bottom: 20px; }
-        .workflow-header p { color: #888; font-size: 1.2rem; max-width: 600px; }
+        .workflow-header p { 
+            color: #888; 
+            font-size: 1.2rem; 
+            max-width: 600px; 
+            margin: 0 auto; /* CENTERED */
+        }
 
         .workflow-container { max-width: 1200px; margin: 0 auto; }
         
