@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - Arajit Portfolio</title>
+    
+    <link rel="icon" type="image/svg+xml" href="Logo/Icon1.svg">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================
+           1. GENERAL SETUP & DYNAMIC VARIABLES
+           ========================================= */
+        :root {
+            --primary-purple: #7C5CFF;
+            --success-green: #0ACF83;
+            
+            /* Dark Theme Colors (Default) */
+            --bg-dark: #111111;
+            --bg-card: #1a1b23;
+            --text-main: #ffffff;
+            --text-gray: #999999;
+            --text-dark-gray: #666666;
+            --nav-border: rgba(255, 255, 255, 0.08);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(17, 17, 17, 0.95);
+            --filter-invert: invert(0);
+        }
+
+        /* LIGHT THEME OVERRIDES */
+        [data-theme="light"] {
+            --bg-dark: #f5f5f7;
+            --bg-card: #ffffff;
+            --text-main: #111111;
+            --text-gray: #555555;
+            --text-dark-gray: #888888;
+            --nav-border: rgba(0, 0, 0, 0.1);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --filter-invert: invert(1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            overflow-x: hidden; 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            cursor: default;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        
+        .container { width: 85%; max-width: 1400px; margin: 0 auto; }
+        main { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 60px 0; }
+        a { text-decoration: none; color: inherit; cursor: pointer; }
+        button { cursor: pointer; }
+
+        /* =========================================
+           1-A. PREMIUM ANIMATED CURSOR CSS
+           ========================================= */
+        * { cursor: none !important; }
+
+        .cursor-dot, .cursor-ring {
+            position: fixed; top: 0; left: 0;
+            border-radius: 50%; pointer-events: none;
+            z-index: 10000; transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out, background-color 0.3s, border 0.3s, width 0.3s, height 0.3s, box-shadow 0.3s;
+        }
+
+        .cursor-dot { width: 8px; height: 8px; background-color: var(--primary-purple); box-shadow: 0 0 10px rgba(124, 92, 255, 0.5); }
+        .cursor-ring { width: 35px; height: 35px; border: 2px solid rgba(124, 92, 255, 0.5); transition: transform 0.15s ease-out; }
+        
+        body.cursor-hover-link .cursor-dot { background-color: var(--text-main); width: 6px; height: 6px; box-shadow: none; }
+        body.cursor-hover-link .cursor-ring { width: 50px; height: 50px; background-color: rgba(124, 92, 255, 0.1); border-color: var(--text-main); box-shadow: 0 0 20px rgba(124, 92, 255, 0.2); }
+        .cursor-ring.clicking { transform: translate(-50%, -50%) scale(0.8); border-width: 3px; background-color: rgba(124, 92, 255, 0.2); }
+
+        /* =========================================
+           2. NAVBAR 
+           ========================================= */
+        nav { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 20px 8%; border-bottom: 1px solid var(--nav-border); 
+            position: sticky; top: 0; z-index: 990; 
+            background-color: var(--glass-bg); backdrop-filter: blur(10px); 
+            transition: 0.5s ease;
+        }
+        .logo { display: flex; align-items: center; gap: 12px; font-size: 1.4rem; font-weight: 700; cursor: pointer; color: var(--text-main);}
+        .logo-box { width: 32px; height: 32px; background: transparent !important; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .logo-box img { max-width: 100%; max-height: 100%; object-fit: contain; filter: var(--filter-invert); transition: 0.5s ease;}
+        
+        .nav-links { display: flex; list-style: none; gap: 35px; align-items: center; }
+        .nav-links > li > a { text-decoration: none; color: var(--text-gray); font-size: 15px; font-weight: 500; transition: 0.3s; padding: 10px 0; }
+        .nav-links > li > a:hover, .nav-links > li > a.active { color: var(--text-main); }
+        
+        .nav-item-dropdown { position: relative; }
+        .dropdown-menu {
+            position: absolute; top: 100%; left: -20px; background: var(--bg-card);
+            border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 15px 0; display: flex; flex-direction: column; min-width: 160px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); opacity: 0; visibility: hidden;
+            transform: translateY(10px); transition: all 0.3s ease; z-index: 1000;
+        }
+        .nav-item-dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-menu a { text-decoration: none; color: var(--text-gray); padding: 10px 25px; font-size: 14px; font-weight: 500; transition: 0.3s; }
+        .dropdown-menu a:hover { color: var(--text-main); background: rgba(124, 92, 255, 0.1); border-left: 3px solid var(--primary-purple); padding-left: 22px; }
+        .social-icons { display: flex; align-items: center; gap: 20px; color: var(--text-gray); cursor: pointer; }
+        .social-icons a { text-decoration: none; color: inherit; transition: 0.3s; }
+        .social-icons a:hover { color: var(--primary-purple); }
+
+        /* =========================================
+           3. SUCCESS / THANK YOU SECTION
+           ========================================= */
+        .success-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 60px 40px;
+            text-align: center;
+            max-width: 650px;
+            width: 100%;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .success-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 20px;
+            background: var(--success-green);
+            filter: blur(40px);
+            opacity: 0.5;
+        }
+
+        .icon-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Animated Glowing Rings */
+        .success-ring-1, .success-ring-2 {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 2px solid var(--success-green);
+        }
+        .success-ring-1 {
+            animation: pulse-ring 2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        .success-ring-2 {
+            animation: pulse-ring 2s infinite cubic-bezier(0.215, 0.61, 0.355, 1) 1s;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 1; border-width: 4px; }
+            100% { transform: scale(1.5); opacity: 0; border-width: 1px; }
+        }
+
+        .check-circle {
+            width: 80px;
+            height: 80px;
+            background: var(--success-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(10, 207, 131, 0.4);
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .check-circle svg {
+            width: 40px;
+            height: 40px;
+            color: white;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: drawCheck 0.5s 0.5s ease forwards;
+        }
+
+        @keyframes drawCheck {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .success-card h1 {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+
+        .success-card p {
+            font-size: 16px;
+            color: var(--text-gray);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .success-card .order-note {
+            background: rgba(124, 92, 255, 0.05);
+            border: 1px solid rgba(124, 92, 255, 0.2);
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: var(--primary-purple);
+            font-weight: 600;
+            margin-bottom: 40px;
+            display: inline-block;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn { 
+            padding: 16px 32px; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            transition: all 0.3s ease; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-size: 15px; 
+            text-decoration: none; 
+            cursor: pointer;
+        }
+        .btn-purple { 
+            background: var(--primary-purple); 
+            color: white; 
+            border: none; 
+            box-shadow: 0 10px 20px rgba(124, 92, 255, 0.2); 
+        }
+        .btn-purple:hover { background: #6a4ee0; transform: translateY(-3px); }
+        .btn-outline { 
+            background: transparent; 
+            color: var(--text-main); 
+            border: 1px solid var(--border-color); 
+        }
+        .btn-outline:hover { background: rgba(124,92,255,0.05); border-color: var(--primary-purple); transform: translateY(-3px); }
+
+        /* Magnetic Effect */
+        .magnetic { transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); display: inline-flex; }
+
+        /* Tilt Effect */
+        .tilt { transition: transform 0.1s ease-out; will-change: transform; transform-style: preserve-3d; }
+
+        /* =========================================
+           4. FOOTER SECTION
+           ========================================= */
+        .footer-section { 
+            background-color: var(--bg-dark); 
+            padding: 60px 0; 
+            text-align: center; 
+            border-top: 1px solid var(--border-color);
+            background-image: linear-gradient(to right, rgba(124, 92, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(124, 92, 255, 0.03) 1px, transparent 1px); 
+            background-size: 45px 45px; 
+            position: relative; z-index: 50;
+            transition: 0.5s ease;
+        }
+        .footer-content { display: flex; flex-direction: column; align-items: center; gap: 30px; }
+        .footer-logo { display: flex; align-items: center; gap: 12px; font-size: 26px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.5s ease;}
+        .f-logo-icon { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; overflow: hidden; background: transparent !important;}
+        .f-logo-icon img { max-width: 100%; max-height: 100%; object-fit: contain; filter: var(--filter-invert); transition: 0.5s ease;}
+        .footer-links { display: flex; list-style: none; gap: 30px; flex-wrap: wrap; justify-content: center; }
+        .footer-links a { text-decoration: none; color: var(--text-main); font-size: 15px; font-weight: 500; transition: 0.3s; }
+        .footer-links a:hover { color: var(--primary-purple); }
+        .copyright { font-size: 14px; color: var(--text-gray); margin-top: 5px; }
+        .copyright span { color: var(--primary-purple); font-weight: 600; }
+
+        /* =========================================
+           5. RESPONSIVE DESIGN
+           ========================================= */
+        @media (max-width: 768px) {
+            nav { padding: 20px 5%; }
+            .nav-links { display: none; }
+            .success-card h1 { font-size: 32px; }
+            .btn-group { flex-direction: column; width: 100%; }
+            .btn { justify-content: center; width: 100%; }
+            .success-card { padding: 40px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+
+    <nav>
+        <div class="logo magnetic" onclick="window.location.href='index.html'">
+            <div class="logo-box">
+                <img src="Logo/arajit.designs.svg" alt="Arajit Logo">
+            </div>
+            arajit.design
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="social-icons">
+            <a href="https://www.facebook.com/YOUR_PROFILE" target="_blank" class="magnetic">f</a> 
+            <a href="https://twitter.com/YOUR_PROFILE" target="_blank" class="magnetic">𝕏</a> 
+            <a href="https://www.linkedin.com/in/YOUR_PROFILE" target="_blank" class="magnetic">in</a>
+            
+            <div id="theme-toggle" class="magnetic" style="color:#FFCC00; margin-left:10px; background: rgba(124,92,255,0.1); width: 32px; height: 32px; display:flex; align-items:center; justify-content:center; border-radius: 50%; cursor: pointer; border: 1px solid var(--border-color); transition: 0.3s;">
+                <span id="theme-icon">☀️</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="success-section">
+            <div class="success-card tilt">
+                
+                <div class="icon-wrapper">
+                    <div class="success-ring-1"></div>
+                    <div class="success-ring-2"></div>
+                    <div class="check-circle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                </div>
+
+                <h1>Payment Successful!</h1>
+                <p>Thank you for choosing Arajit Design. Your payment has been securely processed and your order is confirmed.</p>
+                
+                <div class="order-note">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: -3px; margin-right: 5px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    An email receipt has been sent to your inbox. I will contact you shortly to kick off the project!
+                </div>
+
+                <div class="btn-group">
+                    <a href="index.html" class="btn btn-purple magnetic">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        Back to Home
+                    </a>
+                    <a href="portfolio.html" class="btn btn-outline magnetic">
+                        View Portfolio 
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-section">
+        <div class="container footer-content">
+            <div class="footer-logo">
+                <div class="f-logo-icon">
+                    <img src="Logo/arajit.designs.svg" alt="Arajit Logo">
+                </div>
+                <span>arajit.design</span>
+            </div>
+            <ul class="footer-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <p class="copyright">© 2024 All Rights Reserved by <span>Arajit.design</span></p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // =========================================
+            // 1. THEME SWITCHER (DARK / LIGHT MODE)
+            // =========================================
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            let isLightMode = false;
+            
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                isLightMode = true;
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '🌙'; 
+            }
+            
+            themeToggle.addEventListener('click', () => {
+                isLightMode = !isLightMode;
+                if(isLightMode) {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    themeIcon.textContent = '🌙'; 
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                    themeIcon.textContent = '☀️'; 
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+
+            // =========================================
+            // 2. PREMIUM ANIMATED CURSOR JS
+            // =========================================
+            const dot = document.querySelector('.cursor-dot');
+            const ring = document.querySelector('.cursor-ring');
+            
+            window.addEventListener('mousemove', (e) => {
+                dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+                requestAnimationFrame(() => {
+                    ring.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+                });
+            });
+
+            window.addEventListener('mousedown', () => ring.classList.add('clicking'));
+            window.addEventListener('mouseup', () => ring.classList.remove('clicking'));
+
+            const interactiveElements = document.querySelectorAll('a, button, .magnetic, .nav-links li, #theme-toggle');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover-link'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover-link'));
+            });
+
+            // =========================================
+            // 3. MAGNETIC BUTTON EFFECT
+            // =========================================
+            const magnets = document.querySelectorAll('.magnetic');
+            magnets.forEach(btn => {
+                btn.addEventListener('mousemove', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    this.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+                });
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = `translate(0, 0)`;
+                });
+            });
+
+            // =========================================
+            // 4. 3D TILT EFFECT FOR CARD
+            // =========================================
+            const tiltCards = document.querySelectorAll('.tilt');
+            tiltCards.forEach(el => {
+                el.addEventListener('mousemove', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -5; 
+                    const rotateY = ((x - centerX) / centerX) * 5;
+                    this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                });
+                el.addEventListener('mouseleave', function() {
+                    this.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`;
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

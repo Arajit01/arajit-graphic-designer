@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Details - Arajit Portfolio</title>
+    
+    <link rel="icon" type="image/svg+xml" href="Logo/Icon1.svg">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================
+           1. GENERAL SETUP & DYNAMIC VARIABLES
+           ========================================= */
+        :root {
+            --primary-purple: #7C5CFF;
+            
+            /* Dark Theme Colors (Default) */
+            --bg-dark: #111111;
+            --bg-card: #1a1b23;
+            --bg-stats: #1a1b23;
+            --text-main: #ffffff;
+            --text-gray: #999999;
+            --text-dark-gray: #666666;
+            --nav-border: rgba(255, 255, 255, 0.08);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(17, 17, 17, 0.95);
+            --filter-invert: invert(0);
+        }
+
+        /* LIGHT THEME OVERRIDES */
+        [data-theme="light"] {
+            --bg-dark: #f5f5f7;
+            --bg-card: #ffffff;
+            --bg-stats: #eeeeee;
+            --text-main: #111111;
+            --text-gray: #555555;
+            --text-dark-gray: #888888;
+            --nav-border: rgba(0, 0, 0, 0.1);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --filter-invert: invert(1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; scroll-behavior: smooth; display: flex; flex-direction: column; min-height: 100vh; cursor: default; transition: background-color 0.5s ease, color 0.5s ease; }
+        .container { width: 85%; max-width: 1200px; margin: 0 auto; }
+        main { flex: 1; }
+        a { text-decoration: none; color: inherit; cursor: pointer; }
+        button { cursor: pointer; }
+
+        /* =========================================
+           1-A. PREMIUM ANIMATED CURSOR CSS
+           ========================================= */
+        * { cursor: none !important; }
+
+        .cursor-dot, .cursor-ring {
+            position: fixed; top: 0; left: 0;
+            border-radius: 50%; pointer-events: none;
+            z-index: 10000; transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out, background-color 0.3s, border 0.3s, width 0.3s, height 0.3s, box-shadow 0.3s;
+        }
+
+        .cursor-dot { width: 8px; height: 8px; background-color: var(--primary-purple); box-shadow: 0 0 10px rgba(124, 92, 255, 0.5); }
+        .cursor-ring { width: 35px; height: 35px; border: 2px solid rgba(124, 92, 255, 0.5); transition: transform 0.15s ease-out; }
+        
+        body.cursor-hover-link .cursor-dot { background-color: var(--text-main); width: 6px; height: 6px; box-shadow: none; }
+        body.cursor-hover-link .cursor-ring { width: 50px; height: 50px; background-color: rgba(124, 92, 255, 0.1); border-color: var(--text-main); box-shadow: 0 0 20px rgba(124, 92, 255, 0.2); }
+        .cursor-ring.clicking { transform: translate(-50%, -50%) scale(0.8); border-width: 3px; background-color: rgba(124, 92, 255, 0.2); }
+
+        /* =========================================
+           2. NAVBAR & DROPDOWN
+           ========================================= */
+        nav { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 20px 8%; border-bottom: 1px solid var(--nav-border); 
+            position: sticky; top: 0; z-index: 990; 
+            background-color: var(--glass-bg); backdrop-filter: blur(10px); 
+            transition: 0.5s ease;
+        }
+        .logo { display: flex; align-items: center; gap: 12px; font-size: 1.4rem; font-weight: 700; cursor: pointer; color: var(--text-main); }
+        
+        /* Transparent Logo Box CSS */
+        .logo-box { width: 32px; height: 32px; background: transparent !important; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .logo-box img { max-width: 100%; max-height: 100%; object-fit: contain; filter: var(--filter-invert); transition: 0.5s ease;}
+        
+        .nav-links { display: flex; list-style: none; gap: 35px; align-items: center; }
+        .nav-links > li > a { text-decoration: none; color: var(--text-gray); font-size: 15px; font-weight: 500; transition: 0.3s; padding: 10px 0; }
+        .nav-links > li > a:hover, .nav-links > li > a.active { color: var(--text-main); }
+        
+        .nav-item-dropdown { position: relative; }
+        .dropdown-menu {
+            position: absolute; top: 100%; left: -20px; background: var(--bg-card);
+            border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 15px 0; display: flex; flex-direction: column; min-width: 160px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); opacity: 0; visibility: hidden;
+            transform: translateY(10px); transition: all 0.3s ease; z-index: 1000;
+        }
+        .nav-item-dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-menu a { text-decoration: none; color: var(--text-gray); padding: 10px 25px; font-size: 14px; font-weight: 500; transition: 0.3s; }
+        .dropdown-menu a:hover { color: var(--text-main); background: rgba(124, 92, 255, 0.1); border-left: 3px solid var(--primary-purple); padding-left: 22px; }
+        
+        .social-icons { display: flex; align-items: center; gap: 20px; color: var(--text-gray); cursor: pointer; }
+        .social-icons a { text-decoration: none; color: inherit; transition: 0.3s; }
+        .social-icons a:hover { color: var(--primary-purple); }
+
+        /* =========================================
+           3. BLOG DETAILS HERO
+           ========================================= */
+        .blog-single-hero { text-align: center; padding: 80px 0 40px; display: flex; flex-direction: column; align-items: center; }
+        .sp-badge { background-color: var(--primary-purple); color: white; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; padding: 8px 20px; border-radius: 30px; margin-bottom: 25px; display: inline-block; }
+        .blog-single-hero h1 { font-size: 50px; font-weight: 800; line-height: 1.2; letter-spacing: -1px; max-width: 900px; margin-bottom: 25px; color: var(--text-main); transition: 0.5s ease;}
+        .blog-single-hero p { color: var(--text-gray); font-size: 16px; line-height: 1.7; max-width: 750px; margin: 0 auto; transition: 0.5s ease;}
+
+        /* =========================================
+           4. MAIN IMAGE
+           ========================================= */
+        .blog-main-image { width: 100%; height: 550px; border-radius: 20px; overflow: hidden; margin-bottom: 60px; border: 1px solid var(--border-color); }
+        .blog-main-image img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* =========================================
+           5. ARTICLE & SIDEBAR LAYOUT
+           ========================================= */
+        .blog-content-wrapper { display: flex; gap: 60px; padding-bottom: 60px; align-items: flex-start; }
+
+        .blog-article { flex: 1; color: var(--text-gray); font-size: 16px; line-height: 1.8; transition: 0.5s ease;}
+        .blog-article h2 { font-size: 28px; font-weight: 800; color: var(--text-main); margin: 40px 0 20px; letter-spacing: -0.5px; transition: 0.5s ease;}
+        .blog-article h2:first-child { margin-top: 0; }
+        .blog-article h3 { font-size: 20px; font-weight: 700; color: var(--text-main); margin: 25px 0 10px; transition: 0.5s ease;}
+        .blog-article p { margin-bottom: 20px; }
+        .inline-image-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 40px 0; }
+        .inline-image-grid img { width: 100%; border-radius: 16px; border: 1px solid var(--border-color); object-fit: cover; height: 250px; }
+
+        .blog-sidebar { width: 320px; flex-shrink: 0; position: sticky; top: 100px; display: flex; flex-direction: column; gap: 20px; }
+        .sidebar-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; transition: 0.5s ease;}
+        .meta-list { list-style: none; }
+        .meta-list li { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; color: var(--text-main); font-size: 15px; font-weight: 600; transition: 0.5s ease;}
+        .meta-list li:last-child { margin-bottom: 0; }
+        .meta-icon { width: 35px; height: 35px; border-radius: 50%; background: rgba(124, 92, 255, 0.1); display: flex; align-items: center; justify-content: center; color: var(--primary-purple); }
+        .meta-icon svg { width: 16px; height: 16px; stroke-width: 2.5; }
+        .share-box h4 { font-size: 12px; font-weight: 800; color: var(--text-gray); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; }
+        .share-icons { display: flex; gap: 15px; }
+        .share-btn { width: 40px; height: 40px; border-radius: 50%; background: rgba(124,92,255,0.1); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-main); cursor: pointer; transition: 0.3s; text-decoration: none; }
+        .share-btn:hover { background: var(--primary-purple); border-color: var(--primary-purple); color: white; transform: translateY(-3px); }
+
+        /* =========================================
+           6. RELATED POSTS SECTION
+           ========================================= */
+        .related-posts-section { padding: 60px 0 100px; border-top: 1px solid var(--border-color); margin-top: 20px; transition: 0.5s ease;}
+        .rp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .rp-header h2 { font-size: 32px; font-weight: 700; color: var(--text-gray); transition: 0.5s ease;}
+        .view-more-btn { background: var(--primary-purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .view-more-btn:hover { background: #6a4ee0; transform: translateY(-2px); }
+        .rp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+
+        .blog-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 20px; transition: 0.3s; cursor: pointer; display: flex; flex-direction: column; }
+        .blog-card:hover { border-color: var(--primary-purple); transform: translateY(-5px); box-shadow: 0 15px 30px rgba(124, 92, 255, 0.1); }
+        .b-img-box { position: relative; border-radius: 14px; overflow: hidden; height: 200px; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; background: #111; }
+        .b-img-box img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s ease; filter: grayscale(0.3); }
+        .blog-card:hover .b-img-box img { transform: scale(1.05); filter: grayscale(0); }
+        .b-badge { position: absolute; bottom: 15px; left: 15px; background: var(--primary-purple); color: white; padding: 6px 18px; border-radius: 30px; font-size: 12px; font-weight: 700; z-index: 2; }
+        .b-info { text-align: center; padding: 0 10px 10px; flex: 1; display: flex; flex-direction: column; }
+        .b-meta { font-size: 12px; color: var(--text-gray); margin-bottom: 12px; font-weight: 500; letter-spacing: 0.5px; }
+        .b-info h3 { font-size: 20px; font-weight: 700; color: var(--text-main); margin-bottom: 15px; line-height: 1.4; transition: 0.3s; }
+        .blog-card:hover .b-info h3 { color: var(--primary-purple); }
+        .b-desc { font-size: 14px; color: var(--text-gray); line-height: 1.6; margin-top: auto; }
+
+        /* =========================================
+           7. STATS SECTION
+           ========================================= */
+        .stats-section { background-color: var(--bg-stats); padding: 100px 0; width: 100%; display: flex; justify-content: center; border-top: 1px solid var(--border-color); position: relative; z-index: 40; transition: 0.5s ease;}
+        .stats-container { display: grid; grid-template-columns: repeat(4, 1fr); width: 85%; max-width: 1200px; gap: 40px; }
+        .stat-item { display: flex; align-items: center; gap: 20px; }
+        .stat-number { font-size: 65px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; line-height: 1; letter-spacing: -2px; transition: 0.5s ease;}
+        .plus { color: var(--primary-purple); margin-right: 5px; font-weight: 400; }
+        .stat-label { color: var(--text-gray); font-size: 15px; line-height: 1.4; }
+        .stat-label strong { color: var(--text-main); display: block; font-size: 18px; margin-top: 2px; transition: 0.5s ease;}
+
+        /* =========================================
+           8. CONTACT SECTION
+           ========================================= */
+        .contact-section { padding: 120px 0; background-color: var(--bg-dark); position: relative; overflow: hidden; border-top: 1px solid var(--border-color); z-index: 40; transition: 0.5s ease;}
+        .contact-container { display: flex; gap: 80px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 5; }
+        .contact-info { flex: 1; }
+        .contact-info h2 { font-size: 55px; color: var(--primary-purple); font-weight: 700; margin-bottom: 20px; letter-spacing: -1px; }
+        .contact-info p { color: var(--text-gray); font-size: 16px; line-height: 1.6; margin-bottom: 50px; max-width: 450px; }
+        
+        .c-item { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
+        .c-icon { width: 55px; height: 55px; background: var(--bg-card); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--primary-purple); border: 1px solid var(--border-color); transition: 0.3s; }
+        .c-item:hover .c-icon { background: var(--primary-purple); color: white; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(124, 92, 255, 0.2);}
+        .c-icon svg { width: 22px; height: 22px; fill: currentColor; }
+        .c-text h4 { font-size: 13px; color: var(--text-gray); font-weight: 500; margin-bottom: 5px; }
+        .c-text p { font-size: 16px; color: var(--text-main); font-weight: 700; transition: 0.5s ease;}
+        
+        .contact-form-wrapper { flex: 1.2; }
+        .contact-form-wrapper h3 { font-size: 32px; color: var(--text-main); font-weight: 700; margin-bottom: 30px; transition: 0.5s ease;}
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 13px; font-weight: 600; color: var(--text-main); transition: 0.5s ease;}
+        .form-group label span { color: var(--primary-purple); }
+        
+        .form-control { width: 100%; background: var(--bg-card); border: 1px solid var(--border-color); padding: 15px 20px; border-radius: 10px; color: var(--text-main); font-size: 14px; outline: none; transition: 0.3s; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .form-control::placeholder { color: #888; }
+        .form-control:focus { border-color: var(--primary-purple); background: rgba(124, 92, 255, 0.05); }
+        textarea.form-control { resize: none; height: 160px; }
+        
+        .btn-submit { margin-top: 20px; padding: 16px 32px; background: var(--primary-purple); color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; }
+        .btn-submit:hover { background: #6a4ee0; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(124, 92, 255, 0.3);}
+        
+        .contact-watermark { position: absolute; bottom: -40px; left: 0; width: 100%; text-align: center; font-size: 180px; font-weight: 800; color: transparent; -webkit-text-stroke: 1px rgba(124, 92, 255, 0.1); letter-spacing: 5px; white-space: nowrap; pointer-events: none; z-index: 1; transition: 0.5s ease;}
+
+        /* =========================================
+           9. FOOTER SECTION
+           ========================================= */
+        .footer-section { background-color: var(--bg-dark); padding: 80px 0 60px; text-align: center; border-top: 1px solid var(--border-color); position: relative; z-index: 50; transition: 0.5s ease;}
+        .footer-content { display: flex; flex-direction: column; align-items: center; gap: 35px; }
+        .footer-logo { display: flex; align-items: center; gap: 12px; font-size: 26px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.5s ease;}
+        
+        /* Transparent Footer Logo CSS */
+        .f-logo-icon { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; overflow: hidden; background: transparent !important; }
+        .f-logo-icon img { max-width: 100%; max-height: 100%; object-fit: contain; filter: var(--filter-invert); transition: 0.5s ease;}
+        
+        .footer-links { display: flex; list-style: none; gap: 30px; flex-wrap: wrap; justify-content: center; }
+        .footer-links a { text-decoration: none; color: var(--text-main); font-size: 15px; font-weight: 500; transition: 0.3s; }
+        .footer-links a:hover { color: var(--primary-purple); }
+        .copyright { font-size: 14px; color: var(--text-gray); margin-top: 10px; }
+        .copyright span { color: var(--primary-purple); font-weight: 600; }
+
+        /* =========================================
+           10. CHATBOT AND SCROLL-TO-TOP UX
+           ========================================= */
+        .back-to-top { position: fixed; bottom: 120px; right: 47px; width: 45px; height: 45px; background-color: var(--glass-bg); backdrop-filter: blur(5px); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 50%; display: flex; justify-content: center; align-items: center; transition: all 0.3s ease; z-index: 998; cursor: pointer; opacity: 0; visibility: hidden; transform: translateY(20px); }
+        .back-to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
+        .back-to-top:hover { background-color: var(--primary-purple); border-color: var(--primary-purple); color: white; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(124, 92, 255, 0.3); }
+        .back-to-top svg { width: 20px; height: 20px; stroke-width: 2.5; }
+
+        .chatbot-toggler { position: fixed; bottom: 40px; right: 40px; width: 60px; height: 60px; background: var(--primary-purple); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 9999; box-shadow: 0 15px 30px rgba(124, 92, 255, 0.4); transition: all 0.3s ease; }
+        .chatbot-toggler:hover { transform: scale(1.1); }
+        .chatbot-toggler svg { width: 28px; height: 28px; transition: 0.3s; }
+        .chatbot-toggler.open .icon-chat { display: none; }
+        .chatbot-toggler.open .icon-close { display: block; }
+        .chatbot-toggler .icon-close { display: none; }
+
+        .chat-window { position: fixed; bottom: 115px; right: 40px; width: 380px; max-width: 90vw; background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--border-color); border-radius: 20px; box-shadow: 0 25px 50px rgba(0,0,0,0.2); display: flex; flex-direction: column; overflow: hidden; z-index: 9999; opacity: 0; pointer-events: none; transform: translateY(20px) scale(0.95); transition: all 0.3s ease; }
+        .chat-window.show { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
+        .chat-header { padding: 20px; background: var(--primary-purple); display: flex; align-items: center; gap: 15px; }
+        .chat-bot-avatar { width: 40px; height: 40px; background: transparent; border-radius: 50%; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .chat-bot-avatar img { width: 100%; height: 100%; object-fit: contain; }
+        .chat-header-info h3 { font-size: 16px; color: white; margin-bottom: 2px; }
+        .chat-header-info p { font-size: 12px; color: rgba(255,255,255,0.8); display: flex; align-items: center; gap: 5px; }
+        .status-dot { width: 8px; height: 8px; background: #0ACF83; border-radius: 50%; box-shadow: 0 0 5px #0ACF83; }
+        .chat-body { height: 350px; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .chat-body::-webkit-scrollbar { width: 5px; }
+        .chat-body::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 5px; }
+        .chat-msg { max-width: 85%; padding: 12px 16px; font-size: 14px; line-height: 1.5; border-radius: 16px; animation: msgFadeIn 0.3s ease forwards; word-wrap: break-word; }
+        @keyframes msgFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .msg-bot { background: var(--bg-card); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--border-color);}
+        .msg-user { background: var(--primary-purple); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .chat-input-area { padding: 15px 20px; background: rgba(0,0,0,0.05); border-top: 1px solid var(--border-color); display: flex; gap: 10px; align-items: center; }
+        .chat-input-area input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-main); font-size: 14px; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .chat-input-area input::placeholder { color: var(--text-gray); }
+        .btn-send { background: var(--primary-purple); border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; cursor: pointer; transition: 0.3s; flex-shrink: 0;}
+        .btn-send:hover { transform: scale(1.1); background: #6a4ee0; }
+        .typing-indicator { display: none; gap: 4px; padding: 15px; align-self: flex-start; background: var(--bg-card); border-radius: 16px; border-bottom-left-radius: 4px; border: 1px solid var(--border-color);}
+        .typing-indicator span { width: 6px; height: 6px; background: var(--text-gray); border-radius: 50%; animation: bounce 1.3s linear infinite; }
+        .typing-indicator span:nth-child(2) { animation-delay: -1.1s; }
+        .typing-indicator span:nth-child(3) { animation-delay: -0.9s; }
+        @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-4px); } }
+
+        /* =========================================
+           11. RESPONSIVE DESIGN
+           ========================================= */
+        @media (max-width: 1024px) {
+            .blog-single-hero h1 { font-size: 40px; }
+            .blog-content-wrapper { flex-direction: column; }
+            .blog-sidebar { width: 100%; position: relative; top: 0; flex-direction: row; }
+            .sidebar-box { flex: 1; }
+            .blog-main-image { height: 400px; }
+            .rp-grid { grid-template-columns: repeat(2, 1fr); }
+            .stats-container { grid-template-columns: repeat(2, 1fr); gap: 50px; }
+            .contact-container { flex-direction: column; gap: 50px; }
+            .contact-watermark { font-size: 80px; bottom: 0; }
+            .contact-info h2 { font-size: 45px; }
+            
+            .back-to-top { bottom: 90px; right: 25px; }
+            .chatbot-toggler { bottom: 20px; right: 20px; width: 50px; height: 50px; }
+            .chat-window { bottom: 85px; right: 20px; width: 90vw; }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 20px 5%; }
+            .nav-links { display: none; }
+            .blog-single-hero h1 { font-size: 32px; }
+            .inline-image-grid { grid-template-columns: 1fr; }
+            .blog-sidebar { flex-direction: column; }
+            .blog-main-image { height: 250px; }
+            .rp-grid { grid-template-columns: 1fr; }
+            .rp-header { flex-direction: column; gap: 20px; align-items: flex-start; }
+            .stats-container { grid-template-columns: 1fr; }
+            .form-grid { grid-template-columns: 1fr; }
+            .contact-info h2 { font-size: 35px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+
+    <nav>
+        <div class="logo" onclick="window.location.href='index.html'">
+            <div class="logo-box">
+                <img src="Logo/arajit.designs.svg" alt="Arajit Logo">
+            </div>
+            arajit.design
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li class="nav-item-dropdown">
+                <a href="#">Pages</a>
+                <div class="dropdown-menu">
+                    <a href="pricing.html">Pricing</a>
+                    <a href="coming-soon.html">Coming Soon</a>
+                    <a href="404.html">404</a>
+                </div>
+            </li>
+            <li><a href="blog.html" class="active">Blog</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="social-icons">
+            <a href="https://www.facebook.com/YOUR_PROFILE" target="_blank">f</a> 
+            <a href="https://twitter.com/YOUR_PROFILE" target="_blank">𝕏</a> 
+            <a href="https://www.linkedin.com/in/YOUR_PROFILE" target="_blank">in</a>
+            
+            <div id="theme-toggle" style="color:#FFCC00; margin-left:10px; background: rgba(124,92,255,0.1); width: 32px; height: 32px; display:flex; align-items:center; justify-content:center; border-radius: 50%; cursor: pointer; border: 1px solid var(--border-color); transition: 0.3s;">
+                <span id="theme-icon">☀️</span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        
+        <section class="blog-single-hero container">
+            <div class="sp-badge">DESIGN TREND</div>
+            <h1>How to Create a Seamless<br>Mobile Experience</h1>
+            <p>A great mobile experience can significantly enhance user satisfaction, increase engagement, and boost your app's success. Here's a comprehensive guide to help you create a seamless mobile experience for your users.</p>
+        </section>
+
+        <section class="container">
+            <div class="blog-main-image">
+                <img src="https://images.unsplash.com/photo-1618761714954-0b8cd0026356?auto=format&fit=crop&q=80&w=1400" alt="Mobile Experience Mockups">
+            </div>
+        </section>
+
+        <section class="blog-content-wrapper container">
+            
+            <article class="blog-article">
+                <h2>Prioritize User-Centric Design</h2>
+                
+                <h3>Understand Your Users</h3>
+                <p>Conduct thorough user research to understand your target audience's needs, preferences, and pain points. Use surveys, interviews, and usability testing to gather valuable insights.</p>
+                
+                <h3>Simplify Navigation</h3>
+                <p>Design a clean and intuitive navigation structure. Ensure users can easily find what they're looking for without feeling overwhelmed. Use familiar icons and clear labels to guide them.</p>
+
+                <h2>Optimize Performance</h2>
+                
+                <h3>Fast Loading Times</h3>
+                <p>Optimize your app to load quickly. Users expect instant gratification, and slow load times can lead to frustration and app abandonment. Use efficient coding practices and minimize the use of heavy graphics.</p>
+                
+                <h3>Smooth Animations</h3>
+                <p>Ensure animations and transitions are smooth and do not hinder the app's performance. Well-executed animations can enhance the user experience by providing visual feedback and making interactions feel natural.</p>
+                
+                <h3>Offline Access</h3>
+                <p>Provide offline capabilities for essential features. Allowing users to access certain functionalities without an internet connection can greatly improve their experience, especially in areas with poor connectivity.</p>
+
+                <div class="inline-image-grid">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600" alt="App Screen 1">
+                    <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&q=80&w=600" alt="App Screen 2">
+                </div>
+
+                <h2>Ensure Robust Security</h2>
+                
+                <h3>Data Protection</h3>
+                <p>Implement strong security measures to protect user data. Use encryption, secure authentication methods, and regular security audits to safeguard sensitive information.</p>
+                
+                <h3>Transparent Policies</h3>
+                <p>Be transparent about your data collection and usage policies. Provide users with clear information about how their data is used and give them control over their privacy settings.</p>
+                
+                <h3>Regular Updates</h3>
+                <p>Keep your app updated with the latest security patches and improvements. Regular updates not only enhance security but also show users that you are actively maintaining and improving the app.</p>
+
+                <h2>Conclusion</h2>
+                <p>Creating a seamless mobile experience requires a user-centric approach, performance optimization, responsive design, user engagement strategies, and robust security measures. By focusing on these key areas, you can build a mobile app that not only meets user expectations but also stands out in the competitive app market. Remember, a great mobile experience can turn users into loyal advocates, driving the success of your app.</p>
+            </article>
+
+            <aside class="blog-sidebar">
+                <div class="sidebar-box">
+                    <ul class="meta-list">
+                        <li>
+                            <div class="meta-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+                            16 mins to read
+                        </li>
+                        <li>
+                            <div class="meta-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
+                            Nov 21, 2024
+                        </li>
+                        <li>
+                            <div class="meta-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+                            By Arajit
+                        </li>
+                    </ul>
+                </div>
+                <div class="sidebar-box share-box">
+                    <h4>Share</h4>
+                    <div class="share-icons">
+                        <a href="#" class="share-btn">f</a>
+                        <a href="#" class="share-btn">𝕏</a>
+                        <a href="#" class="share-btn">in</a>
+                        <a href="#" class="share-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a>
+                    </div>
+                </div>
+            </aside>
+        </section>
+
+        <section class="related-posts-section container">
+            <div class="rp-header">
+                <h2>Related posts</h2>
+                <a href="blog.html" class="view-more-btn">
+                    View more 
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+            </div>
+
+            <div class="rp-grid">
+                <div class="blog-card" onclick="window.location.href='blog-details.html'">
+                    <div class="b-img-box">
+                        <img src="https://images.unsplash.com/photo-1618761714954-0b8cd0026356?auto=format&fit=crop&q=80&w=800" alt="UI/UX Design">
+                        <span class="b-badge">@@tag</span>
+                    </div>
+                    <div class="b-info">
+                        <p class="b-meta">@@date</p>
+                        <h3>UI/UX Design</h3>
+                        <p class="b-desc">@@description</p>
+                    </div>
+                </div>
+
+                <div class="blog-card" onclick="window.location.href='blog-details.html'">
+                    <div class="b-img-box">
+                        <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&q=80&w=800" alt="Mobile App Design">
+                        <span class="b-badge">@@tag</span>
+                    </div>
+                    <div class="b-info">
+                        <p class="b-meta">@@date</p>
+                        <h3>Mobile App Design</h3>
+                        <p class="b-desc">@@description</p>
+                    </div>
+                </div>
+
+                <div class="blog-card" onclick="window.location.href='blog-details.html'">
+                    <div class="b-img-box">
+                        <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&q=80&w=800" alt="Brand Identity Design">
+                        <span class="b-badge">@@tag</span>
+                    </div>
+                    <div class="b-info">
+                        <p class="b-meta">@@date</p>
+                        <h3>Brand Identity Design</h3>
+                        <p class="b-desc">@@description</p>
+                    </div>
+                </div>
+
+                <div class="blog-card" onclick="window.location.href='blog-details.html'">
+                    <div class="b-img-box">
+                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800" alt="Web Development">
+                        <span class="b-badge">@@tag</span>
+                    </div>
+                    <div class="b-info">
+                        <p class="b-meta">@@date</p>
+                        <h3>Web Development</h3>
+                        <p class="b-desc">@@description</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats-section">
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-number"><span class="plus">+</span><span class="counter" data-target="10">0</span></div>
+                    <div class="stat-label">Year of <strong>Experience</strong></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number"><span class="plus">+</span><span class="counter" data-target="226">0</span></div>
+                    <div class="stat-label">Projects <strong>Completed</strong></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number"><span class="plus">+</span><span class="counter" data-target="594">0</span></div>
+                    <div class="stat-label">Satisfied <strong>Happy Clients</strong></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number"><span class="plus">+</span><span class="counter" data-target="16">0</span></div>
+                    <div class="stat-label">Awards <strong>Won Received</strong></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact-section">
+            <div class="container contact-container">
+                <div class="contact-info">
+                    <h2>Get in touch</h2>
+                    <p>I'm always excited to take on new projects and collaborate with innovative minds. If you have a project in mind or just want to chat about design, feel free to reach out!</p>
+                    <div class="c-item"><div class="c-icon"><svg viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg></div><div class="c-text"><h4>Phone Number</h4><p>+1-234-567-8901</p></div></div>
+                    <div class="c-item"><div class="c-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div><div class="c-text"><h4>Email</h4><p>contact@arajit.design</p></div></div>
+                    <div class="c-item"><div class="c-icon"><svg viewBox="0 0 24 24"><path d="M23.15 11.39A9.9 9.9 0 0019 3.52 7.7 7.7 0 0012 2a7.7 7.7 0 00-7 1.52A9.9 9.9 0 00.85 11.39a9.9 9.9 0 004.15 7.87A7.7 7.7 0 0012 22a7.7 7.7 0 007-1.52 9.9 9.9 0 004.15-7.87c0-2.73-1.63-5.28-4.15-7.87zM16.5 15.5c-1.5 1.5-4 1.5-4.5 1.5s-3 0-4.5-1.5c-1.5-1.5-1.5-3.5-1.5-4s0-2.5 1.5-4c1.5-1.5 4-1.5 4.5-1.5s3 0 4.5 1.5c1.5 1.5 1.5 3.5 1.5 4s0 2.5-1.5 4z"/></svg></div><div class="c-text"><h4>Skype</h4><p>ArajitDesignUX</p></div></div>
+                    <div class="c-item"><div class="c-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg></div><div class="c-text"><h4>Address</h4><p>0811 Erdman Prairie, Joaville CA</p></div></div>
+                </div>
+
+                <div class="contact-form-wrapper">
+                    <h3>Leave a message</h3>
+                    <form action="https://formsubmit.co/YOUR_EMAIL@GMAIL.COM" method="POST">
+                        <input type="hidden" name="_subject" value="New Contact Message from Arajit Portfolio!">
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="_template" value="table">
+                        <div class="form-grid">
+                            <div class="form-group"><label>Your name <span>*</span></label><input type="text" name="Name" class="form-control" placeholder="John Doe" required></div>
+                            <div class="form-group"><label>Email address <span>*</span></label><input type="email" name="Email" class="form-control" placeholder="contact.john@gmail.com" required></div>
+                            <div class="form-group"><label>Your phone <span>*</span></label><input type="text" name="Phone" class="form-control" placeholder="+01 234 567 89" required></div>
+                            <div class="form-group"><label>Subject <span>*</span></label><input type="text" name="Subject" class="form-control" placeholder="I want to contact for..." required></div>
+                        </div>
+                        <div class="form-group"><label>Message <span>*</span></label><textarea name="Message" class="form-control" placeholder="Your message here..." required></textarea></div>
+                        <button type="submit" class="btn-submit">Send Message <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></button>
+                    </form>
+                </div>
+            </div>
+            <div class="contact-watermark">arajit.design</div>
+        </section>
+
+    </main>
+
+    <footer class="footer-section">
+        <div class="container footer-content">
+            <div class="footer-logo">
+                <div class="f-logo-icon">
+                    <img src="Logo/arajit.designs.svg" alt="Arajit Logo">
+                </div>
+                <span>arajit.design</span>
+            </div>
+            <ul class="footer-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="blog.html" class="active">Blog</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <p class="copyright">© 2024 All Rights Reserved by <span>Arajit.design</span></p>
+        </div>
+    </footer>
+
+    <div class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </div>
+
+    <div class="chatbot-toggler">
+        <svg class="icon-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </div>
+
+    <div class="chat-window">
+        <div class="chat-header">
+            <div class="chat-bot-avatar">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-purple)" stroke-width="2"><path d="M12 2a2 2 0 0 1 2 2c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2zm0 18c-2.2 0-4-1.8-4-4v-1h8v1c0 2.2-1.8 4-4 4zM6 9h12v5a6 6 0 0 1-12 0V9z"/></svg>
+            </div>
+            <div class="chat-header-info">
+                <h3>Arajit AI Assistant</h3>
+                <p><span class="status-dot"></span> Online</p>
+            </div>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="chat-msg msg-bot">Hello there! 👋 I am Arajit's virtual assistant. How can I help you today?</div>
+            <div class="typing-indicator" id="typingIndicator"><span></span><span></span><span></span></div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Write a message...">
+            <button class="btn-send" id="chatSendBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // =========================================
+            // 1. THEME SWITCHER (DARK / LIGHT MODE)
+            // =========================================
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            let isLightMode = false;
+            
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                isLightMode = true;
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '🌙'; 
+            }
+            
+            themeToggle.addEventListener('click', () => {
+                isLightMode = !isLightMode;
+                if(isLightMode) {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    themeIcon.textContent = '🌙'; 
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                    themeIcon.textContent = '☀️'; 
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+
+            // =========================================
+            // 2. PREMIUM ANIMATED CURSOR JS
+            // =========================================
+            const dot = document.querySelector('.cursor-dot');
+            const ring = document.querySelector('.cursor-ring');
+            const interactiveElements = document.querySelectorAll('a, button, input, textarea, [onclick], .nav-links li, .blog-card, .chatbot-toggler, #theme-toggle');
+
+            window.addEventListener('mousemove', (e) => {
+                dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+                requestAnimationFrame(() => {
+                    ring.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+                });
+            });
+
+            window.addEventListener('mousedown', () => ring.classList.add('clicking'));
+            window.addEventListener('mouseup', () => ring.classList.remove('clicking'));
+
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover-link'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover-link'));
+            });
+
+            // STATS COUNTER
+            const counters = document.querySelectorAll('.counter');
+            const observer = new IntersectionObserver((entries) => {
+                if(entries[0].isIntersecting) {
+                    counters.forEach(counter => {
+                        const updateCount = () => {
+                            const target = +counter.getAttribute('data-target');
+                            const count = +counter.innerText;
+                            const inc = target / 100;
+                            if (count < target) { 
+                                counter.innerText = Math.ceil(count + inc); 
+                                setTimeout(updateCount, 20); 
+                            } else { 
+                                counter.innerText = target; 
+                            }
+                        };
+                        updateCount();
+                    });
+                    observer.disconnect(); 
+                }
+            }, { threshold: 0.5 });
+            
+            if(document.querySelector('.stats-section')) {
+                observer.observe(document.querySelector('.stats-section'));
+            }
+
+            // CHATBOT LOGIC & BACK TO TOP
+            const chatToggler = document.querySelector('.chatbot-toggler');
+            const chatWindow = document.querySelector('.chat-window');
+            const chatBody = document.getElementById('chatBody');
+            const chatInput = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('chatSendBtn');
+            const typingIndicator = document.getElementById('typingIndicator');
+            const backToTopBtn = document.querySelector('.back-to-top');
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 400 && !chatWindow.classList.contains('show')) {
+                    backToTopBtn.classList.add('show');
+                } else {
+                    backToTopBtn.classList.remove('show');
+                }
+            });
+
+            chatToggler.addEventListener('click', () => {
+                chatToggler.classList.toggle('open');
+                const isOpen = chatWindow.classList.toggle('show');
+                if(isOpen) {
+                    backToTopBtn.classList.remove('show');
+                } else if (window.scrollY > 400) {
+                    backToTopBtn.classList.add('show');
+                }
+            });
+
+            const responses = {
+                greeting: ["Hello! 👋 How can I help you today?", "Hi there! Welcome to my portfolio. What are you looking for?"],
+                services: ["I offer UI/UX Design, Mobile App Design, Brand Identity, and Web Development. Check the 'Services' section on my home page!"],
+                pricing: ["I have flexible pricing plans starting at $500. Check out the details here: <br><br>👉 <a href='pricing.html' style='color:#FFCC00; font-weight:bold; text-decoration:underline;'>View Pricing Page</a>"],
+                contact_email: ["You can email me directly. Click here to open your mail app: <br><br>📧 <a href='mailto:contact@arajit.design' style='color:#FFCC00; font-weight:bold; text-decoration:underline;'>contact@arajit.design</a>"],
+                whatsapp: ["I'd love to chat! You can message me directly on WhatsApp here: <br><br>💬 <a href='https://wa.me/919876543210' target='_blank' style='color:#0ACF83; font-weight:bold; text-decoration:underline;'>Click to WhatsApp</a>"],
+                hire_interest: ["That's great news! 🚀 Let's create something amazing together. You can fill out the contact form here: <br><br>📝 <a href='contact.html' style='color:#FFCC00; font-weight:bold; text-decoration:underline;'>Go to Contact Page</a>"],
+                thanks: ["You're very welcome! 😊 Let me know if there's anything else I can help you with.", "Glad I could help! Have a wonderful day. 🌟", "Anytime! I'm always here if you need more info. ✌️"],
+                location: ["I am currently based in Siliguri, West Bengal, India. 🌍 But I work with clients worldwide!"],
+                skills: ["My core skills include Figma, Adobe XD, Photoshop, Webflow, Framer, HTML, and CSS. 💻"],
+                experience: ["I have over 12 years of experience in the design industry, completing over 240+ projects! 🚀"],
+                availability: ["I am currently available for new freelance projects and collaborations. Let's build something awesome!"],
+                social: ["You can connect with me on social media! Just click the icons in the navigation bar or footer."],
+                specific_niche: ["Absolutely! I can design and develop custom websites for any specific business, whether it's a tech startup, a garage door service, or an e-commerce store. Let's chat about it! 🚀"],
+                default: ["That's interesting! 🤔 Could you please elaborate? Or you can directly email me at <a href='mailto:contact@arajit.design' style='color:#FFCC00; text-decoration:underline;'>contact@arajit.design</a>."]
+            };
+
+            function getBotResponse(input) {
+                input = input.toLowerCase();
+                if(input.includes("thank") || input.includes("thx") || input.includes("tysm")) return responses.thanks[Math.floor(Math.random() * responses.thanks.length)];
+                if(input.includes("whatsapp") || input.includes("chat") || input.includes("talk directly") || input.includes("speak") || input.includes("message")) return responses.whatsapp[0];
+                if(input.includes("email") || input.includes("mail")) return responses.contact_email[0];
+                if(input.includes("price") || input.includes("pricing") || input.includes("cost") || input.includes("charge") || input.includes("budget")) return responses.pricing[0];
+                if(input.includes("hire") || input.includes("project") || input.includes("work") || input.includes("interest") || input.includes("contact")) return responses.hire_interest[0];
+                if(input.includes("service") || input.includes("offer") || input.includes("do you do")) return responses.services[0];
+                if(input.includes("where") || input.includes("location") || input.includes("from") || input.includes("city") || input.includes("country") || input.includes("live")) return responses.location[0];
+                if(input.includes("skill") || input.includes("know") || input.includes("tool") || input.includes("software")) return responses.skills[0];
+                if(input.includes("experience") || input.includes("how long") || input.includes("years")) return responses.experience[0];
+                if(input.includes("available") || input.includes("free") || input.includes("working hours") || input.includes("freelance")) return responses.availability[0];
+                if(input.includes("social") || input.includes("linkedin") || input.includes("facebook") || input.includes("twitter")) return responses.social[0];
+                if(input.includes("garage") || input.includes("business") || input.includes("custom website") || input.includes("build")) return responses.specific_niche[0];
+                if(input.includes("hi") || input.includes("hello") || input.includes("hey")) return responses.greeting[Math.floor(Math.random() * responses.greeting.length)];
+                return responses.default[0];
+            }
+
+            function addMessage(text, sender) {
+                const msgDiv = document.createElement('div');
+                msgDiv.classList.add('chat-msg', sender === 'user' ? 'msg-user' : 'msg-bot');
+                if(sender === 'user') { msgDiv.textContent = text; } 
+                else { msgDiv.innerHTML = text; }
+                chatBody.insertBefore(msgDiv, typingIndicator);
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }
+
+            function handleChat() {
+                const text = chatInput.value.trim();
+                if(!text) return;
+                addMessage(text, 'user');
+                chatInput.value = '';
+                typingIndicator.style.display = 'flex';
+                chatBody.scrollTop = chatBody.scrollHeight;
+                setTimeout(() => {
+                    typingIndicator.style.display = 'none';
+                    const botReply = getBotResponse(text);
+                    addMessage(botReply, 'bot');
+                }, 1000 + Math.random() * 500);
+            }
+
+            sendBtn.addEventListener('click', handleChat);
+            chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleChat(); });
+        });
+    </script>
+
+</body>
+</html>

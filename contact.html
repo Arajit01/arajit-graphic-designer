@@ -3,128 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Arajit Halder</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Book a Strategy Call - Arajit Halder</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        :root {
-            --primary-red: #D20020;
-            --text-dark: #1a1a1a;
-            --bg-light: #f9f9f9;
+        /* --- PREMIUM VARIABLES --- */
+        :root { 
+            --primary: #D20020; 
+            --primary-hover: #b0001b;
+            --dark: #0f0f0f; 
+            --dark-card: #141414;
+            --text-light: #f4f4f4;
+            --text-gray: #a0a0a0; 
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body { 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 40px 20px; 
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
-        @media (max-width: 1024px) { * { cursor: auto !important; } }
+        /* --- MAIN CARD DESIGN --- */
+        .booking-card { 
+            background: #ffffff; 
+            display: flex; 
+            max-width: 1100px; 
+            width: 100%; 
+            border-radius: 30px; 
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15); 
+            overflow: hidden; 
+            min-height: 700px; 
+            transition: transform 0.3s ease;
+        }
+        
+        /* --- LEFT PANEL (DARK & ELEGANT) --- */
+        .info-panel { 
+            flex: 0.8; 
+            background: var(--dark-card); 
+            color: var(--text-light);
+            padding: 60px 50px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            position: relative;
+            background-image: radial-gradient(circle at top right, rgba(210, 0, 32, 0.05), transparent);
+        }
+        
+        /* Back Button */
+        .back-link { 
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            text-decoration: none; 
+            color: rgba(255,255,255,0.7); 
+            font-weight: 500; 
+            font-size: 0.85rem;
+            padding: 8px 16px;
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        .back-link:hover { 
+            background: white; 
+            color: black; 
+            transform: translateX(-3px);
+        }
+        
+        /* Profile Image with Glow */
+        .avatar-box { 
+            width: 90px; 
+            height: 90px; 
+            border-radius: 50%; 
+            padding: 3px;
+            border: 2px solid var(--primary);
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .avatar-box img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            border-radius: 50%; 
+            background-color: #222;
+        }
+        
+        .main-title { 
+            font-size: 2.2rem; 
+            color: white; 
+            margin-bottom: 15px; 
+            font-weight: 700; 
+            line-height: 1.1; 
+            letter-spacing: -0.5px;
+        }
+        .main-title span { color: var(--primary); }
+        
+        .main-desc { 
+            color: var(--text-gray); 
+            font-size: 0.95rem; 
+            line-height: 1.7; 
+            margin-bottom: 35px; 
+            max-width: 90%; 
+            border-left: 3px solid var(--primary);
+            padding-left: 15px;
+        }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-light);
-            min-height: 100vh;
+        /* Feature List */
+        .meta-list { list-style: none; }
+        .meta-list li { 
+            font-size: 0.9rem; 
+            color: #dcdcdc; 
+            margin-bottom: 18px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            font-weight: 500; 
+        }
+        
+        .icon-box {
+            width: 35px;
+            height: 35px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: var(--primary);
+            font-size: 1rem;
         }
 
-        /* Cursor Styles */
-        .cursor-dot { width: 8px; height: 8px; background: black; border-radius: 50%; position: fixed; pointer-events: none; z-index: 999; transform: translate(-50%, -50%); }
-        .cursor-outline { width: 40px; height: 40px; border: 1px solid rgba(0,0,0,0.3); border-radius: 50%; position: fixed; pointer-events: none; z-index: 998; transform: translate(-50%, -50%); transition: all 0.1s ease-out; }
-
-        .back-btn { position: absolute; top: 40px; left: 50px; width: 50px; height: 50px; border-radius: 50%; background: white; color: black; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 10px 20px rgba(0,0,0,0.05); z-index: 100; transition: 0.3s; }
-        .back-btn:hover { background: var(--primary-red); color: white; transform: scale(1.1); }
-
-        .contact-wrapper { display: flex; width: 85%; max-width: 1200px; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.05); }
-
-        .contact-info { flex: 1; background: #111; color: white; padding: 60px; position: relative; }
-        .contact-info h1 { font-size: 3rem; margin-bottom: 20px; line-height: 1.1; }
-        .info-list { list-style: none; margin-top: 40px; }
-        .info-list li { margin-bottom: 20px; display: flex; align-items: center; }
-        .info-list i { color: var(--primary-red); margin-right: 15px; }
-        .info-list a { color: white; text-decoration: none; }
-
-        .contact-form-area { flex: 1.5; padding: 60px; }
-        .form-group { position: relative; margin-bottom: 35px; }
+        /* --- RIGHT PANEL (CALENDAR) --- */
+        .action-panel { 
+            flex: 1.4; 
+            background: white; 
+            position: relative; 
+        }
         
-        /* Input & Textarea */
-        .form-input { width: 100%; padding: 10px 0; border: none; border-bottom: 2px solid #ddd; outline: none; background: transparent; font-size: 1rem; font-family: inherit; }
-        textarea.form-input { min-height: 80px; resize: none; }
+        .loader { 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            color: #ccc; 
+            font-size: 0.9rem; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            z-index: 1;
+        }
 
-        .form-label { position: absolute; top: 10px; left: 0; color: #999; transition: 0.3s; pointer-events: none; }
+        .calendly-inline-widget { position: relative; z-index: 2; width: 100%; height: 100%; }
 
-        .form-input:focus ~ .form-label,
-        .form-input:valid ~ .form-label { top: -20px; font-size: 0.8rem; color: var(--primary-red); font-weight: 600; }
-        .form-input:focus { border-bottom-color: var(--primary-red); }
+        /* --- MOBILE OPTIMIZATION --- */
+        @media (max-width: 1024px) { 
+            body { padding: 0; background: white; display: block; }
+            
+            .booking-card { 
+                flex-direction: column; 
+                height: 100vh; 
+                max-width: 100%;
+                border-radius: 0; 
+                box-shadow: none; 
+            } 
+            
+            /* Compact Header */
+            .info-panel { 
+                padding: 15px 20px; 
+                flex: 0 0 auto; 
+                background: var(--dark);
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+                align-items: center;
+                text-align: center;
+            } 
+            
+            /* Hide items to save space */
+            .avatar-box, .main-desc { display: none; }
 
-        .submit-btn { background: var(--primary-red); color: white; padding: 15px 40px; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(210,0,32,0.2); }
-        .submit-btn:hover { background: black; transform: translateY(-3px); }
+            /* Mobile Back Button */
+            .back-link {
+                position: relative;
+                top: auto; left: auto;
+                margin-bottom: 10px;
+                padding: 5px 12px;
+                font-size: 0.7rem;
+                background: rgba(255,255,255,0.05);
+                border: none;
+            }
 
-        @media (max-width: 900px) {
-            .contact-wrapper { flex-direction: column; width: 95%; margin: 20px; }
-            .contact-info { padding: 40px; }
-            .back-btn { top: 20px; left: 20px; }
+            .main-title { 
+                font-size: 1.4rem; 
+                margin-bottom: 12px; 
+            }
+
+            /* Horizontal Tags for Mobile */
+            .meta-list {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
+            
+            .meta-list li {
+                font-size: 0.7rem;
+                background: rgba(255,255,255,0.08);
+                padding: 5px 10px;
+                border-radius: 50px;
+                margin-bottom: 0;
+                gap: 6px;
+            }
+            
+            .icon-box {
+                width: auto; height: auto;
+                background: transparent;
+                font-size: 0.8rem;
+            }
+
+            /* Calendar Full Height */
+            .action-panel { 
+                flex: 1; 
+                height: 100%;
+                min-height: 500px;
+            } 
         }
     </style>
 </head>
 <body>
 
-    <div class="cursor-dot"></div>
-    <div class="cursor-outline"></div>
-
-    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
-
-    <div class="contact-wrapper">
-        <div class="contact-info">
-            <h1>Let's work<br>together.</h1>
-            <p>Send me a message and let's create something legendary.</p>
-            
-            <ul class="info-list">
-                <li><i class="fas fa-envelope"></i><a href="mailto:arajithalder123@gmail.com">arajithalder123@gmail.com</a></li>
-                <li><i class="fas fa-phone-alt"></i><a href="tel:+916295577953">+91 6295577953</a></li>
-                <li><i class="fas fa-map-marker-alt"></i><span>Kolkata, India</span></li>
-            </ul>
+<div class="booking-card">
+    <div class="info-panel">
+        <a href="index.html" class="back-link"><i class="fas fa-chevron-left"></i> Home</a>
+        
+        <div class="avatar-box">
+            <img src="Images/about.png" alt="Arajit Halder">
         </div>
-
-        <div class="contact-form-area">
-            <form action="https://formspree.io/f/mwvqgzkk" method="POST">
-                
-                <div class="form-group">
-                    <input type="text" name="name" class="form-input" required>
-                    <label class="form-label">Your Name</label>
-                </div>
-                
-                <div class="form-group">
-                    <input type="email" name="email" class="form-input" required>
-                    <label class="form-label">Your Email</label>
-                </div>
-
-                <div class="form-group">
-                    <input type="text" name="subject" class="form-input" required>
-                    <label class="form-label">Subject</label>
-                </div>
-
-                <div class="form-group">
-                    <textarea name="message" class="form-input" required></textarea>
-                    <label class="form-label">Message</label>
-                </div>
-
-                <button type="submit" class="submit-btn">Send Message</button>
-            </form>
-        </div>
+        
+        <h1 class="main-title">Strategic Design &<br><span>Brand Identity</span></h1>
+        
+        <p class="main-desc">
+            Let's build a brand that speaks for itself. Book a 30-minute discovery session to discuss your vision, goals, and how we can collaborate to create something impactful.
+        </p>
+        
+        <ul class="meta-list">
+            <li><div class="icon-box"><i class="fas fa-video"></i></div> Google Meet Call</li>
+            <li><div class="icon-box"><i class="fas fa-clock"></i></div> 30 Minutes</li>
+            <li><div class="icon-box"><i class="fas fa-globe"></i></div> Your Time Zone</li>
+        </ul>
     </div>
 
-    <script>
-        // Smooth Cursor Script
-        const dot = document.querySelector('.cursor-dot');
-        const outline = document.querySelector('.cursor-outline');
+    <div class="action-panel">
+        <div class="loader">
+            <i class="fas fa-circle-notch fa-spin fa-2x" style="color:var(--primary)"></i>
+            <span>Loading Calendar...</span>
+        </div>
+        
+        <div class="calendly-inline-widget" 
+             data-url="https://calendly.com/arajithalder123/brand-strategy-discovery?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=d20020" 
+             style="min-width:320px;height:100%;">
+        </div>
+        
+        <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+    </div>
+</div>
 
-        window.addEventListener('mousemove', (e) => {
-            dot.style.left = e.clientX + 'px';
-            dot.style.top = e.clientY + 'px';
-            
-            outline.animate({
-                left: e.clientX + 'px',
-                top: e.clientY + 'px'
-            }, { duration: 500, fill: "forwards" });
-        });
-    </script>
 </body>
 </html>
